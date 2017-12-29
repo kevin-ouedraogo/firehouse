@@ -1,0 +1,144 @@
+<?php
+/**
+* @file
+* Module file for First mcrypt_module_close
+*/
+
+/**
+* Implementation of hook_init().
+*/
+
+function first_module_init() {
+
+}
+
+/**
+* Implements hook_menu().
+*/
+function first_module_menu() {
+
+    $items['first_module/custom/%node'] = array (
+        'title' => 'Custom Page',
+        'page callback' => 'first_module_custom',
+        'page arguments' => array(2),
+        'access arguments' => array('custom path')
+    );
+    return $items;
+}
+
+
+/**
+* Custom callback function
+*/
+function first_module_custom($node) {
+// Load node 1
+//$node = node_load($nid);
+//dpm($node);
+
+$content = node_view($node);
+
+    return $content;
+}
+
+
+/**
+* Implementation hook_permission
+*/
+function first_module_permission() {
+    return array (
+        'custom path' => array (
+            'title' => t('Access the custom path'),
+            'description' => t('Allow users access the custom path'),
+        ),
+    );
+}
+
+
+/**
+* modify a form
+*/
+
+function first_module_form_alter(&$form, &$form_state, &$form_id) {
+    if ($form_id == 'article_node_form') {
+        $form['field_message'] = array (
+            '#type' => 'item',
+            '#title' => t('New article'),
+            '#markup' => t('You are about to create a new article'),
+            '#weight' => -5,
+        );
+
+    }
+}
+
+/**
+* Implement hook_block_info().
+*/
+
+function first_module_block_info() {
+    $blocks = array();
+    $blocks['first_block'] = array (
+         'info' => t('First block'),
+         'cache' => DRUPAL_NO_CACHE,
+    );
+
+    $blocks['second_block'] = array (
+        'info' => t('Second Block'),
+        'cache' => DRUPAL_NO_CACHE,
+    );
+
+    return $blocks;
+}
+
+
+/**
+* Implementation hook_block_view().
+*/
+
+function first_module_block_view($block_name = '') {
+    if($block_name == 'first_block') {
+        $content = variable_get('first_block_content','Some content');
+        $block = array (
+            'subject' => t('Sample block'),
+            'content' => t($content),
+        );
+        return $block;
+    }
+
+}
+
+/**
+* implements hook_block_configure
+*/
+function first_module_block_configure($block_name = '') {
+    $form = array();
+    if ($block_name == 'first_block') {
+        $form['first_block_content'] = array(
+            '#type' => 'textarea',
+            '#title' => t('Block contents'),
+            '#size' => 60,
+            '#description' => t('This text will appear in the first block'),
+            '#default_value' => variable_get('first_block_content',t('Example content')),
+        );
+    }
+    return $form;
+}
+
+/**
+* Implements the hook_block_save
+*/
+
+function first_module_block_save($block_name = '', $edit  = array()) {
+    if ($block_name == 'first_block') {
+        variable_set('first_block_content',$edit['first_block_content']);
+    }
+}
+
+/**
+* Implements hook_user_login().
+*/
+
+function first_module_user_login(&$edit, $account) {
+    drupal_set_message(t("Hi @name, thank you for logging in and welcome !", array('@name' => $account->name)));
+
+    //dpm($account);
+}

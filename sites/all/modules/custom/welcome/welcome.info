@@ -1,0 +1,4 @@
+name = Welcome Module
+description = Display a configurable welcome message when users login
+core = 7.x
+files[] = welcome.module
