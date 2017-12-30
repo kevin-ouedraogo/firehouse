@@ -1,0 +1,65 @@
+<?php
+/**
+ * @file
+ * Code for the Todotoday feature.
+ */
+
+include_once 'todotoday.features.inc';
+
+/**
+* Implements hook_menu
+*/
+
+function todotoday_menu() {
+    $items = array();
+
+    $items['todotoday'] = array (
+        'title' => 'Task List',
+        'description' => 'List of tasks from todolist',
+        'page callback' => 'todotoday_list',
+        'access arguments' => array('access content'),
+        'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['todotoday/%'] = array(
+    'title' => 'Task List',
+    'description' => 'System settings for todo_manager',
+    'page callback' => 'todotoday_list',
+    'page arguments' => array(1),
+    'access arguments' => array('access content'),
+    'type' => MENU_NORMAL_ITEM,
+    );
+
+
+    return $items;
+}
+
+
+/**
+* Our first callback function
+*/
+
+function todotoday_list($status = NULL) {
+
+    // Get list of nodes for Task content type.
+    $nodes = node_load_multiple(array(), array('type' => 'todotoday_task'));
+
+    // Display the nodes.
+    $item_link = array();
+
+    foreach ($nodes as  $node) {
+        $field = field_get_items('node', $node, 'field_status');
+        $field = $field[0]['value'];
+
+        if (trim($field) == trim($status) || $status == FALSE) {
+            $item_link[] = l(check_plain($node->title), 'node/'.$node->nid). ' - ' . $field;
+        }
+
+    }
+
+    // Return the displayed nodes.
+
+    $output = theme('item_list',array('items' => $item_link));
+
+    return $output;
+}
