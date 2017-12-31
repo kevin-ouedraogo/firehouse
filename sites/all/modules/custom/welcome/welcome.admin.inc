@@ -13,6 +13,35 @@
 function welcome_admin_settings($form, &$form_state) {
 
     $tokenHelp = t('Available  variables are: [site:name], [site:url], [user:name], [user:mail], [site:login-url], [site:ul-brief], [user:edit-url], [user:one-time-login-url], [user:cancel-url].');
+
+    // Get saved welcomemessages
+    $query = db_select('welcome_message','wm')
+    ->fields('wm', array('rid','message','weight'))
+    ->orderBy('weight');
+    $result = $query->execute();
+    foreach ($result as $record) {
+        $role = user_role_load($record->rid);
+
+        $form['welcome_message'][$record->rid]['msg'] = array(
+            '#type' => 'textarea',
+            '#title' => t('Welcome message for @role',array('@role' => $role->name)),
+            '#description' => t('Edit the welcome message.').''.$tokenHelp,
+            '#rows' => 5,
+            '#default_value' => $record->message,
+        );
+
+        $form['welcome_message'][$record->rid]['weight'] =array(
+            '#type'  => 'weight',
+            '#delta' => 10,
+            '#default_value' => $record->message,
+        );
+
+        $form['welcome_message'][$record->rid]['current'] = array(
+            '#type' => 'hidden',
+            '#value' => $record->message,
+        );
+    }
+
     $roles = user_roles(TRUE);
 
     /*$form['welcome_message'] = array(
