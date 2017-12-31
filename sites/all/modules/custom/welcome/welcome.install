@@ -1,0 +1,69 @@
+<?php
+/**
+* @file
+* Install, update andunistall functions for the welcome module
+*/
+
+
+
+/**
+* Implementation hook_schema().
+*/
+function welcome_schema() {
+    $schema['welcome_message'] = array(
+        'description' => 'The base table for welcomemessages',
+         'fields' => array(
+            'rid' => array(
+                'description' => 'Primary ID for welcome messages',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'message' => array(
+                'description' => 'Thewelme mesage',
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => TRUE,
+                'default'  => '',
+            ),
+            'weight' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default'  => 0,
+            ),
+        ),
+        'primary key' => array('rid'),
+    );
+    return $schema;
+}
+
+/**
+* Implements hook_update_N().
+*/
+function welcome_update_7000(&$sandbox) {
+    $schema['welcome_message'] = array(
+        'description' => 'The base table for welcomemessages',
+         'fields' => array(
+            'rid' => array(
+                'description' => 'Primary ID for welcome messages',
+                'type' => 'serial',
+                'unsigned' => TRUE,
+                'not null' => TRUE,
+            ),
+            'message' => array(
+                'description' => 'Thewelme mesage',
+                'type' => 'varchar',
+                'length' => '255',
+                'not null' => TRUE,
+                'default'  => '',
+            ),
+            'weight' => array(
+                'type' => 'int',
+                'not null' => TRUE,
+                'default'  => 0,
+            ),
+        ),
+        'primary key' => array('rid'),
+    );
+    db_create_table('welcome_message',$schema['welcome_message']);
+}

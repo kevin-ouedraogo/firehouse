@@ -30,26 +30,11 @@ function welcome_menu() {
     $items['admin/config/people/welcome'] = array(
         'title' => 'Welcome message configure',
         'page callback' => 'drupal_get_form',
-        'page arguments' => array('welcome_form'),
+        'page arguments' => array('welcome_admin_settings'),
         'access arguments' => array('administer users'),
         'type' => MENU_NORMAL_ITEM,
+        'file' => 'welcome.admin.inc',
     );
 
     return $items;
-}
-
-/**
-* Implements hook_form().
-* Admin form to configurable welcome Message
-*/
-function welcome_form($form, &$form_date) {
-    $form['welcome_message'] = array(
-        '#type'  => 'textarea',
-        '#title' => t('Welcome message'),
-        '#rows'  => 5,
-        '#required' => TRUE,
-        '#default_value' => variable_get('welcome_message', 'welcome'),
-    );
-
-    return system_settings_form($form);
 }
